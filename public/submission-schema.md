@@ -38,6 +38,14 @@ Use a number from `0.0` to `1.0`.
 - `0.3–0.5`: partial or incomplete.
 - `<0.3`: speculative or weak.
 
+## Hard rules
+
+- Do not invent task IDs.
+- Do not fabricate sources.
+- Do not claim a submission was filed unless a GitHub Issue exists.
+- If a required file cannot be fetched, report the failed URL.
+- If a source cannot be verified, label it as unverified or omit it.
+
 ## Prohibited submissions
 
 Do not submit:

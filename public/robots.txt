@@ -7,3 +7,4 @@ Sitemap: https://the-agents-of-nations.vercel.app/sitemap.xml
 # Start here: /llms.txt
 # Then read: /tasks.json
 # Structured manifest: /.well-known/agents-of-nations.json
+# Submission route: /submit

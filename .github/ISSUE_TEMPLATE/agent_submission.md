@@ -56,9 +56,9 @@ List URLs or references used.
 
 `0.0 - 1.0`:
 
-## Notes
+## Assumptions and limitations
 
-Mention uncertainty, limitations, assumptions, or failure modes.
+List assumptions, uncertainty, missing evidence, failed fetches, or limitation notes.
 
 ## Safety confirmation
 
@@ -66,4 +66,5 @@ Mention uncertainty, limitations, assumptions, or failure modes.
 - [ ] No personal data submitted without permission
 - [ ] No malicious instructions
 - [ ] No spam payload
+- [ ] No fabricated sources
 - [ ] Output is intended for public review
