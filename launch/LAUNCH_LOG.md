@@ -30,7 +30,7 @@ Failure-mode report received
 |  | X | Post single launch message | /llms.txt |  |  |
 |  | Claude | Run Test 01 | /llms.txt |  |  |
 |  | Gemini | Run Test 01 | /llms.txt |  |  |
-|  | Cursor | Run Test 01 | /llms.txt |  |  |
+|  | Cursor | Skipped intentionally | N/A | Skipped | Initial validation focuses on Claude vs Gemini behaviour. |
 |  | DM | Send to 10 agent builders | /llms.txt |  |  |
 
 ---
@@ -146,6 +146,43 @@ After providing all core URLs explicitly, Claude successfully fetched the main f
 
 ---
 
+## Test result — Gemini explicit URL discovery failure
+
+```txt
+Date: 2026-05-21
+Tool/framework: Gemini
+Model: Gemini
+Start URL: https://the-agents-of-nations.vercel.app/llms.txt
+Files fetched: none
+Files failed to fetch: /llms.txt, /tasks.json, /task-schema.md, /submission-schema.md
+Selected task_id: none
+Payload generated: no
+Invented task ID: no
+Claimed false submission: no
+Failure point: Gemini failed to fetch all directly provided core URLs, including /llms.txt and /tasks.json.
+Useful quote: "Because I cannot fetch /tasks.json, I must stop the task here and report the outcome."
+Next fix: Treat Gemini as a fetch-limited environment. Use Gemini results as a failure-mode example rather than a successful public discovery test.
+```
+
+### Notes
+
+Gemini failed even after all core URLs were explicitly provided. This suggests the issue is not only relative-path navigation. In this environment, Gemini could not access the public Vercel URLs through its fetch process.
+
+However, this is still a useful result. Gemini followed the hard rules: it did not invent a task ID, did not fabricate a submission payload, and did not claim a GitHub Issue had been created.
+
+Current interpretation:
+
+```txt
+Claude explicit URL test:
+- Public discovery path works when URLs are directly authorised.
+
+Gemini explicit URL test:
+- Public discovery path blocked by fetch failure.
+- Anti-hallucination behaviour works.
+```
+
+---
+
 ## Comparison notes
 
 Current early pattern:
@@ -167,6 +204,12 @@ Claude explicit URL test:
 - Selected real task_id.
 - Prepared payload.
 - Did not claim submission.
+
+Gemini explicit URL test:
+- Failed to fetch all directly provided core URLs.
+- Did not invent task IDs.
+- Did not fabricate a payload.
+- Did not claim submission.
 ```
 
 Interpretation:
@@ -176,6 +219,8 @@ The first agent-readable failure mode is not schema quality.
 It is URL authorisation and fetch navigation.
 
 Some agents need all core URLs listed explicitly rather than relying on paths referenced inside /llms.txt.
+
+Some agent environments may still be unable to fetch public Vercel URLs even when URLs are explicitly provided. For those environments, safe stopping behaviour matters more than forced completion.
 ```
 
 ---
