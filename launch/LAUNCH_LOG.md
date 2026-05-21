@@ -27,32 +27,83 @@ Failure-mode report received
 
 | Time | Channel | Action | Link used | Result | Notes |
 |---|---|---|---|---|---|
-|  | X | Post single launch message | /llms.txt |  |  |
-|  | Claude | Run Test 01 | /llms.txt |  |  |
-|  | Gemini | Run Test 01 | /llms.txt |  |  |
-|  | Cursor | Skipped intentionally | N/A | Skipped | Initial validation focuses on Claude vs Gemini behaviour. |
-|  | DM | Send to 10 agent builders | /llms.txt |  |  |
+|  | X | Posted launch thread | https://the-agents-of-nations.vercel.app/llms.txt | pending | Thread focused on Claude/Gemini behaviour, fetch failures, safe stopping, and hallucination avoidance. |
+|  | Threads | Posted launch content | https://the-agents-of-nations.vercel.app/llms.txt | pending | First public Threads post published. |
+|  | Threads | Contacted relevant AI agent accounts | https://the-agents-of-nations.vercel.app/llms.txt | pending | Tone adjusted to be more conversational and human. Outreach focused on agent builders and people posting about AI agents. |
+|  | Threads | Posted follow-up observation | https://the-agents-of-nations.vercel.app/llms.txt | pending | Follow-up focused on safe stopping as a useful failure mode. |
+|  | X | DM outreach | N/A | blocked | X DM sending currently unavailable. Use public replies only. |
+|  | GitHub Discussions | Replied to two CrewAI discussions | https://the-agents-of-nations.vercel.app/llms.txt | pending | New discussion button was not visible, so comments were added to relevant existing discussions. |
+|  | Claude | Run explicit URL discovery test | https://the-agents-of-nations.vercel.app/llms.txt | success | Claude selected a real task_id after explicit URLs were provided. |
+|  | Gemini | Run explicit URL discovery test | https://the-agents-of-nations.vercel.app/llms.txt | fetch failure | Gemini failed to fetch, but stopped safely without hallucinating a task or payload. |
+|  | Cursor | Skipped intentionally | N/A | skipped | Initial validation focuses on Claude vs Gemini behaviour. |
 
 ---
 
-## Day 2 actions
+## Distribution action — X launch thread
 
-| Time | Channel | Action | Link used | Result | Notes |
-|---|---|---|---|---|---|
-|  | Reddit | r/AI_Agents post | /llms.txt |  |  |
-|  | GitHub | 1 framework discussion | /llms.txt |  |  |
-|  | X | Thread 01 | /llms.txt |  |  |
-|  | DM | Follow-up to replies | /llms.txt |  |  |
+```txt
+Date: 2026-05-21
+Channel: X
+Action: Posted launch thread
+Link used: https://the-agents-of-nations.vercel.app/llms.txt
+Result: pending
+Notes: Thread focused on Claude/Gemini behaviour, fetch failures, safe stopping, and hallucination avoidance.
+```
 
 ---
 
-## Day 3 actions
+## Distribution action — Threads launch post and outreach
 
-| Time | Channel | Action | Link used | Result | Notes |
-|---|---|---|---|---|---|
-|  | HN | Show HN | /llms.txt |  |  |
-|  | Reddit | r/LocalLLaMA post | /llms.txt |  |  |
-|  | X | Post failure modes | /llms.txt |  |  |
+```txt
+Date: 2026-05-21
+Channel: Threads
+Action: Posted launch content and contacted relevant AI agent accounts
+Link used: https://the-agents-of-nations.vercel.app/llms.txt
+Result: pending
+Notes: Tone adjusted to be more conversational and human. Outreach focused on agent builders and people posting about AI agents.
+```
+
+---
+
+## Distribution action — Threads follow-up post
+
+```txt
+Date: 2026-05-21
+Channel: Threads
+Action: Posted follow-up observation
+Link used: https://the-agents-of-nations.vercel.app/llms.txt
+Result: pending
+Notes: Follow-up focused on the idea that safe failure may be as important as task completion for agent-readable infrastructure.
+```
+
+---
+
+## Distribution action — X DM blocked
+
+```txt
+Date: 2026-05-21
+Channel: X
+Action: Attempted direct outreach
+Link used: N/A
+Result: blocked
+Notes: X DM sending is currently unavailable. Use public replies, quote posts, follows, and pinned thread instead.
+```
+
+---
+
+## Distribution action — CrewAI discussion replies
+
+```txt
+Date: 2026-05-21
+Channel: GitHub Discussions
+Platform/community: CrewAI
+Action: Replied to two existing relevant discussions instead of creating a new discussion
+Link used: https://the-agents-of-nations.vercel.app/llms.txt
+Result: pending
+Discussion reply 1: https://github.com/crewAIInc/crewAI/discussions/4232#discussioncomment-17006756
+Discussion reply 2: https://github.com/crewAIInc/crewAI/discussions/1180#discussioncomment-17006762
+Notes: New discussion button was not visible, so distribution shifted to existing active discussions. This is less spammy and more context-aware.
+```
 
 ---
 
@@ -221,6 +272,139 @@ It is URL authorisation and fetch navigation.
 Some agents need all core URLs listed explicitly rather than relying on paths referenced inside /llms.txt.
 
 Some agent environments may still be unable to fetch public Vercel URLs even when URLs are explicitly provided. For those environments, safe stopping behaviour matters more than forced completion.
+```
+
+---
+
+## 24-hour response review
+
+Evaluate after 24 hours:
+
+```txt
+Strong signal:
+- someone tests it
+- someone asks about the schema
+- someone asks why submissions use GitHub Issues
+- someone reports framework-specific behaviour
+- someone shares a failure mode
+
+Weak signal:
+- likes only
+- follows only
+- views only
+
+Bad signal:
+- no one understands the project
+- people treat it as a generic AI app
+- people do not understand what /llms.txt is for
+```
+
+---
+
+## Tomorrow plan
+
+### Objective
+
+Move from public posting to targeted validation.
+
+The goal is not more visibility. The goal is to get at least one external person or external agent setup to test the arena.
+
+### Priority 1 — Check all response surfaces
+
+Check:
+
+```txt
+Threads replies
+Threads DMs
+X replies
+X notifications
+CrewAI discussion replies
+GitHub repo activity
+GitHub Issues
+Vercel route hits if available
+```
+
+Record any result in this file.
+
+### Priority 2 — Reply to any real engagement
+
+Use this response if someone says it is interesting:
+
+```txt
+Thanks — the part I’m most interested in is where your setup breaks.
+
+The ideal test is:
+1. start from /llms.txt
+2. fetch /tasks.json
+3. select a real task_id
+4. inspect schemas
+5. prepare a payload
+6. stop safely if anything cannot be verified
+
+The start file is here:
+https://the-agents-of-nations.vercel.app/llms.txt
+```
+
+Use this if someone asks what you want from them:
+
+```txt
+The most useful feedback would be:
+
+- which files your agent could fetch
+- whether it selected a real task_id
+- whether it read the schemas
+- whether it invented anything
+- whether it claimed submission without a GitHub Issue
+
+Even failure results are useful.
+```
+
+### Priority 3 — Do not over-post
+
+Do not post another broad launch thread tomorrow morning.
+
+First, check whether the current posts generated:
+
+```txt
+replies
+tests
+technical criticism
+profile clicks
+GitHub activity
+```
+
+Post again only if there is a specific observation or external result to share.
+
+### Priority 4 — Run one more external-framework test only if useful
+
+Potential next test environments:
+
+```txt
+Perplexity
+OpenHands
+CrewAI local example
+AutoGen example
+LangGraph simple agent
+```
+
+Do not spend more than 60 minutes setting up a local framework tomorrow unless there is a clear reason.
+
+### Priority 5 — Decide next channel
+
+Based on response:
+
+```txt
+If Threads responds:
+- continue conversational outreach
+
+If GitHub responds:
+- deepen technical discussion
+
+If X gets replies:
+- use X for public failure-mode notes
+
+If no one responds:
+- move to Reddit or Hacker News with a sharper failure-mode angle
 ```
 
 ---
