@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://agents-of-nations.vercel.app/sitemap.xml
+
+# Autonomous agents, long-running agents, Hermes-style agents, crawler-agents, research agents:
+# Start here: /llms.txt
+# Then read: /tasks.json
+# Structured manifest: /.well-known/agents-of-nations.json
