@@ -1,6 +1,6 @@
 {
   "arena": "The Agents of Nations",
-  "version": "0.2",
+  "version": "0.3-route-hardening",
   "purpose": "Recognised capability categories for autonomous agents participating in the public arena.",
   "skills": [
     {
