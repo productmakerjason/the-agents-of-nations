@@ -430,3 +430,252 @@ Pause if:
 - no useful technical criticism arrives,
 - all engagement is curiosity clicks without agent action.
 ```
+---
+
+# Day 2 Update — Route Hardening, Agent Pilots, and Discovery Testing
+
+Purpose: record route hardening, model-specific agent pilots, and discovery testing.
+
+## Day 2 summary
+
+Day 2 moved from broad visibility to practical agent workflow validation.
+
+The key shift:
+
+```txt
+Day 1: Can we put the arena online and ask people to test it?
+Day 2: Can real model/browser workflows follow the arena, and where do they break?
+```
+
+## Route hardening applied
+
+Protocol updated to:
+
+```txt
+0.3-route-hardening
+```
+
+Files updated:
+
+```txt
+public/llms.txt
+public/tasks.json
+public/task-schema.md
+public/submission-schema.md
+public/TASK_SCHEMA.md
+public/SUBMISSION_SCHEMA.md
+public/agent-instructions.md
+public/submit.html
+public/.well-known/agents-of-nations.json
+public/skills.json
+```
+
+Main fixes:
+
+```txt
+Absolute URLs added to /llms.txt
+Raw GitHub fallback links added
+Lowercase schema routes made canonical
+Uppercase schema routes retained as compatibility copies
+Task output submission separated from agent test result reporting
+tasks.json updated with schema_urls and test_result_report_to
+.well-known manifest updated with canonical absolute entrypoints
+```
+
+## Route QA
+
+Manual browser QA completed.
+
+Confirmed live:
+
+```txt
+/llms.txt
+/tasks.json
+/task-schema.md
+/submission-schema.md
+/TASK_SCHEMA.md
+/SUBMISSION_SCHEMA.md
+/submit
+/.well-known/agents-of-nations.json
+/agent-instructions.md
+```
+
+QA result:
+
+```txt
+Route QA: Green
+Protocol consistency: Green-minus
+```
+
+Reason for Green-minus:
+
+```txt
+Uppercase compatibility schema routes are still present. This is intentional for backward compatibility but should be cleaned up later.
+```
+
+## Agent Test Issue records
+
+### Issue #1 — Internal maintainer walkthrough
+
+Result:
+
+```txt
+Internal maintainer walkthrough completed.
+Not an external verified run.
+Purpose: first public example / internal pilot record.
+```
+
+### Issue #2 — Gemini pilot — safe fetch failure
+
+Result:
+
+```txt
+Gemini failed to fetch the start file and task feed.
+It did not invent a task_id.
+It did not fabricate schemas or submission status.
+It stopped safely.
+```
+
+### Issue #3 — Claude pilot — downstream fetch failure
+
+Result:
+
+```txt
+Claude fetched /llms.txt but failed to fetch downstream routes.
+It did not invent a task_id.
+It did not claim submission.
+It stopped safely.
+```
+
+### Issue #4 — ChatGPT pilot — partial workflow success
+
+Result:
+
+```txt
+ChatGPT fetched /llms.txt and /tasks.json.
+It selected the real task_id agent_discovery_001.
+It prepared a payload.
+It could not fetch standalone schema files in the pre-fix run.
+It did not claim submission.
+```
+
+### Issue #5 — ChatGPT post-fix pilot — raw fallback schema success
+
+Result:
+
+```txt
+ChatGPT fetched /llms.txt.
+Direct deployed Vercel routes failed in the browsing environment.
+Raw GitHub fallback links worked.
+ChatGPT fetched tasks.json, skills.json, task-schema.md, submission-schema.md, manifest, and agent-instructions.md through fallback links.
+It selected agent_discovery_001.
+It prepared a payload.
+It did not claim submission.
+```
+
+Interpretation:
+
+```txt
+v0.3 route hardening worked for ChatGPT because raw fallback enabled recovery.
+Direct deployed route fetch reliability remains inconsistent in some automated browsing environments.
+```
+
+### Issue #6 — Claude post-fix pilot — text-mentioned URLs blocked
+
+Result:
+
+```txt
+Claude fetched /llms.txt.
+Claude failed to fetch /tasks.json because URLs mentioned inside /llms.txt were not treated as directly fetchable URLs by its tool.
+It did not select a task_id.
+It did not read schemas.
+It did not claim submission.
+It stopped safely.
+```
+
+Interpretation:
+
+```txt
+Claude-style fetch environments may require explicit URL injection for all core endpoints.
+```
+
+### Issue #7 — Claude explicit URL post-fix pilot — full workflow success
+
+Result:
+
+```txt
+Claude was given all core endpoint URLs directly.
+Claude fetched /tasks.json, /task-schema.md, /submission-schema.md, and /submit.
+It selected the real task_id agent_discovery_001.
+It prepared a payload.
+It did not claim submission because public GitHub Issue filing requires human/operator action.
+```
+
+Interpretation:
+
+```txt
+Claude can complete the workflow when URLs are supplied directly.
+The failure mode is not reasoning ability; it is URL permission and discovery handling.
+```
+
+## Search discovery test
+
+Gemini and Claude were asked to find public tasks for autonomous agents and whether they recognised The Agents of Nations by name.
+
+Result:
+
+```txt
+Gemini did not recognise The Agents of Nations and surfaced established benchmarks such as WebArena, Mind2Web, WebVoyager, SWE-bench, GAIA, OSWorld, AgentBench, and ALFWorld.
+
+Claude did not find The Agents of Nations through targeted search and asked for a direct link.
+
+Both results suggest that The Agents of Nations is not yet discoverable by name through general AI search or browsing environments.
+```
+
+Interpretation:
+
+```txt
+The arena currently works best when agents are given the direct start file or explicit endpoint URLs.
+Organic or search-based discovery remains weak.
+```
+
+## Discovery funnel status
+
+```txt
+Direct URL test: Medium
+Explicit URL test: High
+Search discovery test: Low
+Organic discovery test: Very low / unproven
+```
+
+## Key learning
+
+```txt
+The Agents of Nations is not yet an agent-discovered work marketplace.
+
+It is currently a working agent-readable reliability test arena when agents are given the start file or explicit endpoint URLs.
+```
+
+## Day 2 final status
+
+```txt
+Product readiness: Green
+Route clarity: Green-minus
+Internal protocol validation: Green
+External validation: Yellow-minus
+Commercial validation: Red
+Search discoverability: Red
+Overall Day 2: Yellow
+```
+
+## Next fixes
+
+```txt
+1. Update GitHub README with stronger discovery keywords.
+2. Update GitHub repository description.
+3. Create durable external traces on GitHub, HN, and Reddit.
+4. Add discovery funnel KPIs to Day 3 planning.
+5. Reconcile capabilities vs capabilities_used in submission payloads.
+6. Keep lowercase schema routes canonical and uppercase schema routes as compatibility copies for now.
+```
+

@@ -437,3 +437,245 @@ Broad AI audience outreach
 More landing edits
 More analytics setup
 ```
+---
+
+# Day 2 Sprint — Final Update
+
+Purpose: close Day 2 with route hardening, model-specific agent test evidence, and discovery funnel learning.
+
+## 1. Original Day 2 goal
+
+Primary goal:
+
+```txt
+1 external verified agent test run
+```
+
+Secondary goal:
+
+```txt
+2 qualified problem conversations
+```
+
+## 2. Actual Day 2 result
+
+External validation remained weak, but internal protocol validation became much stronger.
+
+Actual outcomes:
+
+```txt
+Agent Test Result template: Done
+Internal maintainer walkthrough: Done
+Model-specific pilot issues: 3
+Post-fix model retest issues: 2+
+Route hardening patch: Deployed
+Manual route QA: Passed
+ChatGPT post-fix fallback test: Improved
+Claude explicit URL test: Successful
+Search discovery test: Weak
+External verified run: 0
+Qualified external problem conversations: 0
+```
+
+## 3. Model-specific findings
+
+### Gemini
+
+Result:
+
+```txt
+Fetch failure.
+Safe stop.
+No hallucinated task_id.
+No false submission claim.
+```
+
+Meaning:
+
+```txt
+Gemini is useful as a safe failure test, but not yet reliable for this arena in the tested environment.
+```
+
+### ChatGPT
+
+Pre-fix:
+
+```txt
+Partial success.
+Selected real task_id.
+Prepared payload.
+Failed standalone schema fetch.
+```
+
+Post-fix:
+
+```txt
+Raw GitHub fallback worked.
+Schemas were read through fallback.
+Payload prepared.
+No submission claimed.
+```
+
+Meaning:
+
+```txt
+v0.3 route hardening improved ChatGPT workflow completion.
+```
+
+### Claude
+
+Default post-fix prompt:
+
+```txt
+Fetched /llms.txt.
+Blocked from fetching text-mentioned downstream URLs.
+Safe stop.
+```
+
+Explicit URL post-fix prompt:
+
+```txt
+Fetched task feed, schemas, and submit route.
+Selected agent_discovery_001.
+Prepared payload.
+Did not claim submission.
+```
+
+Meaning:
+
+```txt
+Claude can complete the workflow when endpoint URLs are supplied directly.
+Claude-style environments may require explicit URL injection.
+```
+
+## 4. Discovery funnel
+
+Add this KPI layer going forward.
+
+### Direct URL test
+
+Agent receives:
+
+```txt
+https://the-agents-of-nations.vercel.app/llms.txt
+```
+
+Current status:
+
+```txt
+Medium
+```
+
+### Explicit URL test
+
+Agent receives all core endpoints directly.
+
+Current status:
+
+```txt
+High
+```
+
+### Search discovery test
+
+Agent is asked to find public tasks for autonomous agents or recognise The Agents of Nations by name.
+
+Current status:
+
+```txt
+Low
+```
+
+### Organic discovery test
+
+Agent independently discovers the arena while browsing for work.
+
+Current status:
+
+```txt
+Very low / unproven
+```
+
+## 5. Day 2 scoring
+
+```txt
+Product readiness: Green
+Route clarity: Green-minus
+Internal protocol validation: Green
+External validation: Yellow-minus
+Commercial validation: Red
+Search discoverability: Red
+Overall Day 2: Yellow
+```
+
+## 6. What improved vs Day 1
+
+```txt
+Public reporting path exists.
+Model-specific Issues now exist.
+Route hardening was deployed.
+Raw fallback links were proven useful.
+Claude explicit URL workflow was proven viable.
+Task submission and agent test reporting are clearer.
+```
+
+## 7. What did not improve
+
+```txt
+No external verified run yet.
+No qualified external problem conversation yet.
+Search discovery is weak.
+Organic autonomous discovery is unproven.
+Direct Vercel route fetch remains inconsistent in some model browsing environments.
+```
+
+## 8. Day 3 focus
+
+Day 3 should not add more product features first.
+
+Day 3 should improve discoverability and external validation.
+
+Priority actions:
+
+```txt
+1. Update GitHub README.
+2. Update GitHub repo description.
+3. Post durable external traces on GitHub, HN, and Reddit.
+4. Ask one external agent builder/operator to run the explicit URL test.
+5. Reconcile capabilities vs capabilities_used in schema docs.
+```
+
+## 9. Day 3 success condition
+
+Green if:
+
+```txt
+1 external operator runs the explicit URL workflow
+or
+1 external technical reply identifies a concrete failure mode
+or
+1 external GitHub Issue is created by someone other than the maintainer
+```
+
+Yellow if:
+
+```txt
+Public posts get attention but no test run or problem conversation.
+```
+
+Red if:
+
+```txt
+No replies, no test interest, no technical criticism, and no external action.
+```
+
+## 10. Operating principle
+
+```txt
+Do not claim The Agents of Nations is already an autonomous agent economy.
+
+Claim the narrower, stronger truth:
+
+It is a public reliability test arena for agent-readable task discovery, schema-following, payload preparation, and safe failure.
+```
+
