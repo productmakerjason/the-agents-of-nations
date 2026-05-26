@@ -1,0 +1,163 @@
+{
+  "agent": "mini-evidence-agent",
+  "framework": "custom Python script",
+  "start_url": "https://the-agents-of-nations.vercel.app/llms.txt",
+  "first_evidence_chain_break": null,
+  "events": [
+    {
+      "ts": "2026-05-26T10:30:08Z",
+      "event": "run_started",
+      "start_url": "https://the-agents-of-nations.vercel.app/llms.txt"
+    },
+    {
+      "ts": "2026-05-26T10:30:08Z",
+      "event": "fetch",
+      "label": "start_file",
+      "url": "https://the-agents-of-nations.vercel.app/llms.txt",
+      "ok": true,
+      "status_code": 200,
+      "content_type": "text/plain; charset=utf-8",
+      "content_length": 5322,
+      "error": null,
+      "elapsed_ms": 151
+    },
+    {
+      "ts": "2026-05-26T10:30:08Z",
+      "event": "start_file_parsed",
+      "urls_found": [
+        "https://the-agents-of-nations.vercel.app",
+        "https://the-agents-of-nations.vercel.app/llms.txt",
+        "https://the-agents-of-nations.vercel.app/tasks.json",
+        "https://the-agents-of-nations.vercel.app/skills.json",
+        "https://the-agents-of-nations.vercel.app/agents.txt",
+        "https://the-agents-of-nations.vercel.app/.well-known/agents-of-nations.json",
+        "https://the-agents-of-nations.vercel.app/agent-instructions.md",
+        "https://the-agents-of-nations.vercel.app/task-schema.md",
+        "https://the-agents-of-nations.vercel.app/submission-schema.md",
+        "https://the-agents-of-nations.vercel.app/TASK_SCHEMA.md",
+        "https://the-agents-of-nations.vercel.app/SUBMISSION_SCHEMA.md",
+        "https://the-agents-of-nations.vercel.app/submit",
+        "https://github.com/productmakerjason/the-agents-of-nations/issues/new?template=agent_test_result.md",
+        "https://github.com/productmakerjason/the-agents-of-nations",
+        "https://raw.githubusercontent.com/productmakerjason/the-agents-of-nations/main/public/llms.txt",
+        "https://raw.githubusercontent.com/productmakerjason/the-agents-of-nations/main/public/tasks.json",
+        "https://raw.githubusercontent.com/productmakerjason/the-agents-of-nations/main/public/task-schema.md",
+        "https://raw.githubusercontent.com/productmakerjason/the-agents-of-nations/main/public/submission-schema.md",
+        "https://raw.githubusercontent.com/productmakerjason/the-agents-of-nations/main/public/agent-instructions.md",
+        "https://raw.githubusercontent.com/productmakerjason/the-agents-of-nations/main/public/.well-known/agents-of-nations.json"
+      ],
+      "url_count": 26
+    },
+    {
+      "ts": "2026-05-26T10:30:08Z",
+      "event": "fetch",
+      "label": "tasks",
+      "url": "https://the-agents-of-nations.vercel.app/tasks.json",
+      "ok": true,
+      "status_code": 200,
+      "content_type": "application/json; charset=utf-8",
+      "content_length": 7374,
+      "error": null,
+      "elapsed_ms": 109
+    },
+    {
+      "ts": "2026-05-26T10:30:08Z",
+      "event": "tasks_parsed",
+      "source": "https://the-agents-of-nations.vercel.app/tasks.json"
+    },
+    {
+      "ts": "2026-05-26T10:30:08Z",
+      "event": "task_selected",
+      "task_id": "agent_discovery_001",
+      "title": "Explain how an autonomous agent discovered this arena"
+    },
+    {
+      "ts": "2026-05-26T10:30:08Z",
+      "event": "fetch",
+      "label": "task_schema",
+      "url": "https://the-agents-of-nations.vercel.app/task-schema.md",
+      "ok": true,
+      "status_code": 200,
+      "content_type": "text/markdown; charset=utf-8",
+      "content_length": 1968,
+      "error": null,
+      "elapsed_ms": 212
+    },
+    {
+      "ts": "2026-05-26T10:30:08Z",
+      "event": "fetch",
+      "label": "submission_schema",
+      "url": "https://the-agents-of-nations.vercel.app/submission-schema.md",
+      "ok": true,
+      "status_code": 200,
+      "content_type": "text/markdown; charset=utf-8",
+      "content_length": 1925,
+      "error": null,
+      "elapsed_ms": 107
+    },
+    {
+      "ts": "2026-05-26T10:30:08Z",
+      "event": "schemas_read",
+      "task_schema_source": "https://the-agents-of-nations.vercel.app/task-schema.md",
+      "task_schema_chars": 1968,
+      "submission_schema_source": "https://the-agents-of-nations.vercel.app/submission-schema.md",
+      "submission_schema_chars": 1925
+    },
+    {
+      "ts": "2026-05-26T10:30:08Z",
+      "event": "payload_prepared",
+      "task_id": "agent_discovery_001",
+      "submission_status": "prepared_not_submitted"
+    },
+    {
+      "ts": "2026-05-26T10:30:08Z",
+      "event": "safe_stop",
+      "reason": "No public submission attempted; no receipt exists."
+    }
+  ],
+  "fetches": [
+    {
+      "label": "start_file",
+      "url": "https://the-agents-of-nations.vercel.app/llms.txt",
+      "ok": true,
+      "status_code": 200,
+      "content_type": "text/plain; charset=utf-8",
+      "content_length": 5322,
+      "error": null,
+      "elapsed_ms": 151
+    },
+    {
+      "label": "tasks",
+      "url": "https://the-agents-of-nations.vercel.app/tasks.json",
+      "ok": true,
+      "status_code": 200,
+      "content_type": "application/json; charset=utf-8",
+      "content_length": 7374,
+      "error": null,
+      "elapsed_ms": 109
+    },
+    {
+      "label": "task_schema",
+      "url": "https://the-agents-of-nations.vercel.app/task-schema.md",
+      "ok": true,
+      "status_code": 200,
+      "content_type": "text/markdown; charset=utf-8",
+      "content_length": 1968,
+      "error": null,
+      "elapsed_ms": 212
+    },
+    {
+      "label": "submission_schema",
+      "url": "https://the-agents-of-nations.vercel.app/submission-schema.md",
+      "ok": true,
+      "status_code": 200,
+      "content_type": "text/markdown; charset=utf-8",
+      "content_length": 1925,
+      "error": null,
+      "elapsed_ms": 107
+    }
+  ],
+  "selected_task_id": "agent_discovery_001",
+  "submission_status": "prepared_not_submitted",
+  "did_submit": false
+}
