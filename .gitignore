@@ -4,3 +4,5 @@ _private/
 # Local-only project notes and cleanup backups
 _private/
 archive/
+.DS_Store
+public/.DS_Store
