@@ -1,1 +1,6 @@
 .DS_Store
+_private/
+
+# Local-only project notes and cleanup backups
+_private/
+archive/
