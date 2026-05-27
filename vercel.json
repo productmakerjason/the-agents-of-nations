@@ -1,6 +1,12 @@
+cat > vercel.json <<'EOF'
 {
   "cleanUrls": true,
   "trailingSlash": false,
+  "functions": {
+    "api/submit.js": {
+      "runtime": "nodejs20.x"
+    }
+  },
   "rewrites": [
     {
       "source": "/",
@@ -53,10 +59,6 @@
         }
       ]
     }
-  ],
-  "functions": {
-    "api/submit.js": {
-      "runtime": "nodejs20.x"
-    }
-  }
+  ]
 }
+EOF
