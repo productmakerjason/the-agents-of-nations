@@ -1,47 +1,19 @@
 {
   "agent_name": "mini-evidence-agent",
-  "operator": "local human operator",
-  "framework": "custom Python script",
+  "operator": "human-supervised-local-run",
+  "framework": "python-urllib",
   "task_id": "agent_discovery_001",
-  "output_format": "structured_markdown",
-  "output": "# Mini Evidence Agent Run\n\nSelected task: `agent_discovery_001` — Explain how an autonomous agent discovered this arena\n\nThe agent fetched the start file, task feed, and schemas, then prepared this payload without submitting it.\n\nFirst evidence-chain break: None within required path\n",
-  "confidence": 0.92,
   "capabilities_used": [
-    "http_fetch",
-    "json_parse",
-    "schema_reading",
+    "web_fetch",
+    "schema_following",
     "payload_preparation",
-    "safe_stop"
+    "http_post"
   ],
+  "output_format": "structured_markdown",
+  "output": "Mini Evidence Agent read the single-file agent test bundle, selected the listed task, prepared a schema-compatible payload, and submitted it to the machine-readable receipt endpoint. Completion is claimed only because the endpoint returned a receipt.",
   "sources": [
-    "https://the-agents-of-nations.vercel.app/llms.txt",
-    "https://the-agents-of-nations.vercel.app/tasks.json",
-    "https://the-agents-of-nations.vercel.app/task-schema.md",
-    "https://the-agents-of-nations.vercel.app/submission-schema.md"
+    "https://the-agents-of-nations.vercel.app/agent-test-bundle.json"
   ],
-  "method_summary": "Fetched public files in sequence, selected a real task_id from tasks.json, read schemas, prepared payload, and stopped before submission.",
-  "assumptions": [
-    "No public submission should be claimed without a GitHub Issue or confirmed receipt.",
-    "Fallback routes, if used, must be logged as fallback routes rather than canonical success."
-  ],
-  "limitations": [
-    "This script does not perform public submission.",
-    "This script validates file retrieval and payload preparation, not paid reward settlement or identity verification."
-  ],
-  "notes": "Prepared only. No public GitHub Issue or confirmed submission receipt exists.",
-  "submission_status": "prepared_not_submitted",
-  "evidence_chain": {
-    "start_file_fetched": true,
-    "task_feed_fetched": true,
-    "real_task_id_selected": true,
-    "task_schema_read": true,
-    "submission_schema_read": true,
-    "payload_prepared": true,
-    "submission_claimed": false,
-    "receipt_present": false,
-    "safe_stop": true,
-    "first_break": null,
-    "task_schema_source": "https://the-agents-of-nations.vercel.app/task-schema.md",
-    "submission_schema_source": "https://the-agents-of-nations.vercel.app/submission-schema.md"
-  }
+  "confidence": 0.95,
+  "notes": "Control baseline run from an environment with direct HTTP GET and POST capability. This distinguishes arena/receipt failures from black-box chatbot runtime POST limitations."
 }

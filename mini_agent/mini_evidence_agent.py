@@ -1,338 +1,333 @@
 #!/usr/bin/env python3
 """
-Mini Evidence-Chain Agent for The Agents of Nations
+Mini Evidence Agent — bundle-path receipt baseline
 
 Purpose:
-  White-box baseline agent that follows a public task-flow and logs every transition:
-  /llms.txt -> /tasks.json -> task selection -> schemas -> payload preparation.
+  Control baseline for The Agents of Nations.
+  This version starts from the single-file bundle and attempts a real POST
+  to the machine-readable receipt endpoint.
 
-What it does NOT do:
-  - It does not submit publicly.
-  - It does not claim submission.
-  - It does not invent task IDs if tasks.json cannot be fetched.
+Flow:
+  /agent-test-bundle.json -> payload preparation -> /api/submit -> receipt check
 
 Outputs:
   ./mini_agent_output/run_log.json
   ./mini_agent_output/payload.json
   ./mini_agent_output/summary.md
-
-Run:
-  python mini_evidence_agent.py
-
-Optional:
-  python mini_evidence_agent.py --start https://the-agents-of-nations.vercel.app/llms.txt
-  python mini_evidence_agent.py --out ./my_run_output
 """
 
 from __future__ import annotations
 
-import argparse
 import json
-import re
 import sys
-import time
-from dataclasses import asdict, dataclass
+from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
-from urllib.parse import urljoin
-
-try:
-    import requests
-except ImportError as exc:
-    raise SystemExit("Missing dependency: requests. Install with: pip install requests") from exc
-
-DEFAULT_START_URL = "https://the-agents-of-nations.vercel.app/llms.txt"
-DEFAULT_BASE = "https://the-agents-of-nations.vercel.app"
-CANONICAL_ROUTES = {
-    "tasks": "/tasks.json",
-    "task_schema": "/task-schema.md",
-    "submission_schema": "/submission-schema.md",
-    "submit": "/submit",
-}
-RAW_FALLBACKS = {
-    "tasks": "https://raw.githubusercontent.com/productmakerjason/the-agents-of-nations/main/public/tasks.json",
-    "task_schema": "https://raw.githubusercontent.com/productmakerjason/the-agents-of-nations/main/public/task-schema.md",
-    "submission_schema": "https://raw.githubusercontent.com/productmakerjason/the-agents-of-nations/main/public/submission-schema.md",
-}
+from typing import Any, Dict
+from urllib import error, request
 
 
-@dataclass
-class FetchResult:
-    label: str
-    url: str
-    ok: bool
-    status_code: Optional[int]
-    content_type: Optional[str]
-    content_length: int
-    error: Optional[str]
-    elapsed_ms: int
+BUNDLE_URL = "https://the-agents-of-nations.vercel.app/agent-test-bundle.json"
+
+OUTPUT_DIR = Path("mini_agent_output")
+RUN_LOG_PATH = OUTPUT_DIR / "run_log.json"
+PAYLOAD_PATH = OUTPUT_DIR / "payload.json"
+SUMMARY_PATH = OUTPUT_DIR / "summary.md"
 
 
-class EvidenceChainAgent:
-    def __init__(self, start_url: str, out_dir: Path, timeout: int = 20) -> None:
-        self.start_url = start_url
-        self.base_url = self._base_from_start(start_url)
-        self.out_dir = out_dir
-        self.timeout = timeout
-        self.events: List[Dict[str, Any]] = []
-        self.fetches: List[FetchResult] = []
-        self.sources: List[str] = []
-        self.first_break: Optional[str] = None
-        self.payload: Optional[Dict[str, Any]] = None
+def now_iso() -> str:
+    return datetime.now(timezone.utc).isoformat()
 
-    @staticmethod
-    def _base_from_start(start_url: str) -> str:
-        if "/llms.txt" in start_url:
-            return start_url.split("/llms.txt", 1)[0]
-        return DEFAULT_BASE
 
-    def event(self, event_type: str, detail: Dict[str, Any]) -> None:
-        record = {
-            "ts": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-            "event": event_type,
-            **detail,
+def http_get_json(url: str) -> Dict[str, Any]:
+    req = request.Request(
+        url,
+        method="GET",
+        headers={
+            "User-Agent": "mini-evidence-agent/0.2",
+            "Accept": "application/json",
+        },
+    )
+
+    with request.urlopen(req, timeout=20) as response:
+        raw = response.read().decode("utf-8")
+        return {
+            "ok": True,
+            "status_code": response.status,
+            "content_type": response.headers.get("content-type"),
+            "json": json.loads(raw),
+            "raw": raw,
         }
-        self.events.append(record)
-        print(f"[{event_type}] {json.dumps(detail, ensure_ascii=False)}")
 
-    def fetch(self, label: str, url: str) -> Tuple[Optional[str], FetchResult]:
-        started = time.time()
+
+def http_post_json(url: str, payload: Dict[str, Any]) -> Dict[str, Any]:
+    data = json.dumps(payload).encode("utf-8")
+
+    req = request.Request(
+        url,
+        data=data,
+        method="POST",
+        headers={
+            "User-Agent": "mini-evidence-agent/0.2",
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+        },
+    )
+
+    with request.urlopen(req, timeout=20) as response:
+        raw = response.read().decode("utf-8")
+        return {
+            "ok": True,
+            "status_code": response.status,
+            "content_type": response.headers.get("content-type"),
+            "json": json.loads(raw),
+            "raw": raw,
+        }
+
+
+def to_error(stage: str, exc: Exception) -> Dict[str, Any]:
+    if isinstance(exc, error.HTTPError):
         try:
-            resp = requests.get(
-                url,
-                timeout=self.timeout,
-                headers={
-                    "User-Agent": "mini-evidence-agent/0.1 (+https://the-agents-of-nations.vercel.app)",
-                    "Accept": "text/plain, application/json, text/markdown, */*",
+            body = exc.read().decode("utf-8")
+        except Exception:
+            body = ""
+        return {
+            "stage": stage,
+            "ok": False,
+            "error_type": "HTTPError",
+            "status_code": exc.code,
+            "reason": exc.reason,
+            "body": body,
+        }
+
+    if isinstance(exc, error.URLError):
+        return {
+            "stage": stage,
+            "ok": False,
+            "error_type": "URLError",
+            "reason": str(exc.reason),
+        }
+
+    return {
+        "stage": stage,
+        "ok": False,
+        "error_type": type(exc).__name__,
+        "reason": str(exc),
+    }
+
+
+def write_outputs(run: Dict[str, Any], payload: Dict[str, Any] | None) -> None:
+    OUTPUT_DIR.mkdir(exist_ok=True)
+
+    RUN_LOG_PATH.write_text(json.dumps(run, indent=2, ensure_ascii=False), encoding="utf-8")
+
+    if payload is not None:
+        PAYLOAD_PATH.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
+    else:
+        PAYLOAD_PATH.write_text(
+            json.dumps(
+                {
+                    "payload_prepared": False,
+                    "first_evidence_chain_break": run.get("first_evidence_chain_break"),
                 },
-            )
-            elapsed_ms = int((time.time() - started) * 1000)
-            text = resp.text if resp.ok else None
-            result = FetchResult(
-                label=label,
-                url=url,
-                ok=resp.ok,
-                status_code=resp.status_code,
-                content_type=resp.headers.get("content-type"),
-                content_length=len(resp.content or b""),
-                error=None if resp.ok else f"HTTP {resp.status_code}",
-                elapsed_ms=elapsed_ms,
-            )
-            self.fetches.append(result)
-            self.event("fetch", asdict(result))
-            if resp.ok:
-                self.sources.append(url)
-            return text, result
-        except Exception as exc:  # noqa: BLE001
-            elapsed_ms = int((time.time() - started) * 1000)
-            result = FetchResult(
-                label=label,
-                url=url,
-                ok=False,
-                status_code=None,
-                content_type=None,
-                content_length=0,
-                error=repr(exc),
-                elapsed_ms=elapsed_ms,
-            )
-            self.fetches.append(result)
-            self.event("fetch", asdict(result))
-            return None, result
-
-    def fetch_with_fallback(self, label: str, canonical_url: str, fallback_url: Optional[str]) -> Tuple[Optional[str], str, FetchResult]:
-        text, result = self.fetch(label, canonical_url)
-        if text is not None:
-            return text, canonical_url, result
-        if fallback_url:
-            self.event("fallback_attempt", {"label": label, "canonical_url": canonical_url, "fallback_url": fallback_url})
-            text, result = self.fetch(f"{label}_fallback", fallback_url)
-            if text is not None:
-                return text, fallback_url, result
-        if self.first_break is None:
-            self.first_break = f"Failed to fetch {label}: {canonical_url}"
-        return None, canonical_url, result
-
-    @staticmethod
-    def extract_urls(text: str) -> List[str]:
-        return re.findall(r"https?://[^\s)>'\"]+", text or "")
-
-    def select_task(self, tasks: Any) -> Optional[Dict[str, Any]]:
-        if isinstance(tasks, dict):
-            task_list = tasks.get("tasks") or tasks.get("items") or tasks.get("data")
-        else:
-            task_list = tasks
-        if not isinstance(task_list, list) or not task_list:
-            if self.first_break is None:
-                self.first_break = "tasks.json did not contain a non-empty task list"
-            return None
-
-        # Prefer the discovery task because it is directly aligned with this arena test.
-        for task in task_list:
-            if isinstance(task, dict) and task.get("task_id") == "agent_discovery_001":
-                return task
-        for task in task_list:
-            if isinstance(task, dict) and task.get("task_id"):
-                return task
-        if self.first_break is None:
-            self.first_break = "No task object with task_id found in task feed"
-        return None
-
-    def prepare_payload(self, task: Dict[str, Any], task_schema_url: str, submission_schema_url: str) -> Dict[str, Any]:
-        task_id = task.get("task_id")
-        title = task.get("title", "Untitled task")
-        payload = {
-            "agent_name": "mini-evidence-agent",
-            "operator": "local human operator",
-            "framework": "custom Python script",
-            "task_id": task_id,
-            "output_format": task.get("output_format", "structured_markdown"),
-            "output": (
-                f"# Mini Evidence Agent Run\n\n"
-                f"Selected task: `{task_id}` — {title}\n\n"
-                f"The agent fetched the start file, task feed, and schemas, then prepared this payload without submitting it.\n\n"
-                f"First evidence-chain break: {self.first_break or 'None within required path'}\n"
+                indent=2,
+                ensure_ascii=False,
             ),
-            "confidence": 0.82 if self.first_break else 0.92,
-            "capabilities_used": ["http_fetch", "json_parse", "schema_reading", "payload_preparation", "safe_stop"],
-            "sources": self.sources,
-            "method_summary": "Fetched public files in sequence, selected a real task_id from tasks.json, read schemas, prepared payload, and stopped before submission.",
-            "assumptions": [
-                "No public submission should be claimed without a GitHub Issue or confirmed receipt.",
-                "Fallback routes, if used, must be logged as fallback routes rather than canonical success.",
-            ],
-            "limitations": [
-                "This script does not perform public submission.",
-                "This script validates file retrieval and payload preparation, not paid reward settlement or identity verification.",
-            ],
-            "notes": "Prepared only. No public GitHub Issue or confirmed submission receipt exists.",
-            "submission_status": "prepared_not_submitted",
-            "evidence_chain": {
-                "start_file_fetched": any(f.label == "start_file" and f.ok for f in self.fetches),
-                "task_feed_fetched": any("tasks" in f.label and f.ok for f in self.fetches),
-                "real_task_id_selected": bool(task_id),
-                "task_schema_read": any("task_schema" in f.label and f.ok for f in self.fetches),
-                "submission_schema_read": any("submission_schema" in f.label and f.ok for f in self.fetches),
-                "payload_prepared": True,
-                "submission_claimed": False,
-                "receipt_present": False,
-                "safe_stop": True,
-                "first_break": self.first_break,
-                "task_schema_source": task_schema_url,
-                "submission_schema_source": submission_schema_url,
-            },
-        }
-        return payload
+            encoding="utf-8",
+        )
 
-    def run(self) -> int:
-        self.out_dir.mkdir(parents=True, exist_ok=True)
-        self.event("run_started", {"start_url": self.start_url})
+    summary = f"""# Mini Evidence Agent Bundle Receipt Run
 
-        start_text, start_fetch = self.fetch("start_file", self.start_url)
-        if start_text is None:
-            self.first_break = f"Failed to fetch start file: {self.start_url}"
-            self.write_outputs(None, None, None)
-            return 2
+Started at: {run.get("started_at")}
+Finished at: {run.get("finished_at")}
 
-        urls_in_start = self.extract_urls(start_text)
-        self.event("start_file_parsed", {"urls_found": urls_in_start[:20], "url_count": len(urls_in_start)})
+## Result
 
-        tasks_url = urljoin(self.base_url + "/", CANONICAL_ROUTES["tasks"].lstrip("/"))
-        task_schema_url = urljoin(self.base_url + "/", CANONICAL_ROUTES["task_schema"].lstrip("/"))
-        submission_schema_url = urljoin(self.base_url + "/", CANONICAL_ROUTES["submission_schema"].lstrip("/"))
+- Bundle fetched: {bool(run.get("files_fetched"))}
+- Selected task_id: {run.get("selected_task_id")}
+- Payload prepared: {run.get("payload_prepared")}
+- Did submit: {run.get("did_submit")}
+- Receipt returned: {run.get("receipt_returned")}
+- receipt_id: {run.get("receipt_id")}
+- proof_origin: {run.get("proof_origin")}
+- validation.status: {run.get("validation_status")}
+- final_submission_status: {run.get("final_submission_status")}
+- completion_judgement: {run.get("completion_judgement")}
 
-        tasks_text, tasks_source, _ = self.fetch_with_fallback("tasks", tasks_url, RAW_FALLBACKS["tasks"])
-        if tasks_text is None:
-            self.write_outputs(None, None, None)
-            return 3
+## First evidence-chain break
 
-        try:
-            tasks_json = json.loads(tasks_text)
-            self.event("tasks_parsed", {"source": tasks_source})
-        except json.JSONDecodeError as exc:
-            self.first_break = f"tasks.json fetched but could not be parsed as JSON: {exc}"
-            self.event("parse_error", {"label": "tasks", "error": str(exc)})
-            self.write_outputs(None, None, None)
-            return 4
-
-        task = self.select_task(tasks_json)
-        if task is None:
-            self.write_outputs(None, tasks_source, None)
-            return 5
-        self.event("task_selected", {"task_id": task.get("task_id"), "title": task.get("title")})
-
-        task_schema_text, task_schema_source, _ = self.fetch_with_fallback("task_schema", task_schema_url, RAW_FALLBACKS["task_schema"])
-        if task_schema_text is None:
-            self.write_outputs(task, tasks_source, None)
-            return 6
-
-        submission_schema_text, submission_schema_source, _ = self.fetch_with_fallback("submission_schema", submission_schema_url, RAW_FALLBACKS["submission_schema"])
-        if submission_schema_text is None:
-            self.write_outputs(task, tasks_source, task_schema_source)
-            return 7
-
-        self.event("schemas_read", {
-            "task_schema_source": task_schema_source,
-            "task_schema_chars": len(task_schema_text),
-            "submission_schema_source": submission_schema_source,
-            "submission_schema_chars": len(submission_schema_text),
-        })
-
-        self.payload = self.prepare_payload(task, task_schema_source, submission_schema_source)
-        self.event("payload_prepared", {"task_id": task.get("task_id"), "submission_status": "prepared_not_submitted"})
-        self.event("safe_stop", {"reason": "No public submission attempted; no receipt exists."})
-        self.write_outputs(task, tasks_source, task_schema_source)
-        return 0
-
-    def write_outputs(self, task: Optional[Dict[str, Any]], tasks_source: Optional[str], task_schema_source: Optional[str]) -> None:
-        run_log = {
-            "agent": "mini-evidence-agent",
-            "framework": "custom Python script",
-            "start_url": self.start_url,
-            "first_evidence_chain_break": self.first_break,
-            "events": self.events,
-            "fetches": [asdict(f) for f in self.fetches],
-            "selected_task_id": task.get("task_id") if task else None,
-            "submission_status": "prepared_not_submitted",
-            "did_submit": False,
-        }
-        (self.out_dir / "run_log.json").write_text(json.dumps(run_log, indent=2, ensure_ascii=False), encoding="utf-8")
-        if self.payload:
-            (self.out_dir / "payload.json").write_text(json.dumps(self.payload, indent=2, ensure_ascii=False), encoding="utf-8")
-        else:
-            (self.out_dir / "payload.json").write_text(json.dumps({"payload_prepared": False, "first_break": self.first_break}, indent=2), encoding="utf-8")
-
-        summary = [
-            "# Mini Evidence Agent Run Summary",
-            "",
-            f"Start URL: {self.start_url}",
-            f"Selected task_id: {task.get('task_id') if task else 'None'}",
-            f"First evidence-chain break: {self.first_break or 'None within required path'}",
-            "Did submit: No",
-            "Submission status: prepared_not_submitted",
-            "",
-            "## Fetches",
-        ]
-        for f in self.fetches:
-            summary.append(f"- {f.label}: {f.url} — ok={f.ok}, status={f.status_code}, error={f.error}")
-        summary.extend([
-            "",
-            "## Output files",
-            "- run_log.json",
-            "- payload.json",
-        ])
-        (self.out_dir / "summary.md").write_text("\n".join(summary), encoding="utf-8")
-        self.event("outputs_written", {"out_dir": str(self.out_dir)})
+```json
+{json.dumps(run.get("first_evidence_chain_break"), indent=2, ensure_ascii=False)}
+```
+"""
+    SUMMARY_PATH.write_text(summary, encoding="utf-8")
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Mini Evidence-Chain Agent")
-    parser.add_argument("--start", default=DEFAULT_START_URL, help="Start URL, default is the arena llms.txt")
-    parser.add_argument("--out", default="mini_agent_output", help="Output directory")
-    parser.add_argument("--timeout", type=int, default=20, help="HTTP timeout in seconds")
-    args = parser.parse_args()
+    run: Dict[str, Any] = {
+        "agent_name": "mini-evidence-agent",
+        "framework": "python-urllib",
+        "started_at": now_iso(),
+        "bundle_url": BUNDLE_URL,
+        "files_fetched": [],
+        "selected_task_id": None,
+        "payload_prepared": False,
+        "did_submit": False,
+        "receipt_returned": False,
+        "receipt_id": None,
+        "proof_origin": None,
+        "validation_status": None,
+        "final_submission_status": "safe_stopped",
+        "completion_judgement": "FAIL_OR_PARTIAL",
+        "first_evidence_chain_break": None,
+        "events": [],
+    }
 
-    agent = EvidenceChainAgent(start_url=args.start, out_dir=Path(args.out), timeout=args.timeout)
-    return agent.run()
+    payload: Dict[str, Any] | None = None
+
+    try:
+        bundle_response = http_get_json(BUNDLE_URL)
+        bundle = bundle_response["json"]
+        run["files_fetched"].append(BUNDLE_URL)
+        run["events"].append(
+            {
+                "ts": now_iso(),
+                "event": "bundle_fetched",
+                "url": BUNDLE_URL,
+                "status_code": bundle_response["status_code"],
+                "content_type": bundle_response["content_type"],
+            }
+        )
+    except Exception as exc:
+        err = to_error("bundle_fetch", exc)
+        run["first_evidence_chain_break"] = err
+        run["events"].append(err)
+        run["finished_at"] = now_iso()
+        write_outputs(run, payload)
+        print(json.dumps(run, indent=2, ensure_ascii=False))
+        return 1
+
+    selected_task = bundle.get("selected_test_task") or {}
+    task_id = selected_task.get("task_id")
+    output_format = selected_task.get("output_format", "structured_markdown")
+
+    if not task_id:
+        err = {
+            "stage": "task_selection",
+            "ok": False,
+            "error": "selected_test_task.task_id missing from bundle",
+        }
+        run["first_evidence_chain_break"] = err
+        run["events"].append(err)
+        run["finished_at"] = now_iso()
+        write_outputs(run, payload)
+        print(json.dumps(run, indent=2, ensure_ascii=False))
+        return 1
+
+    run["selected_task_id"] = task_id
+    run["events"].append(
+        {
+            "ts": now_iso(),
+            "event": "task_selected",
+            "task_id": task_id,
+        }
+    )
+
+    endpoint = bundle.get("machine_readable_receipt_endpoint") or {}
+    submit_url = endpoint.get("url")
+    submit_method = endpoint.get("method")
+
+    if not submit_url or submit_method != "POST":
+        err = {
+            "stage": "receipt_endpoint_read",
+            "ok": False,
+            "error": "missing valid POST receipt endpoint",
+            "endpoint": endpoint,
+        }
+        run["first_evidence_chain_break"] = err
+        run["events"].append(err)
+        run["finished_at"] = now_iso()
+        write_outputs(run, payload)
+        print(json.dumps(run, indent=2, ensure_ascii=False))
+        return 1
+
+    payload = {
+        "agent_name": "mini-evidence-agent",
+        "operator": "human-supervised-local-run",
+        "framework": "python-urllib",
+        "task_id": task_id,
+        "capabilities_used": [
+            "web_fetch",
+            "schema_following",
+            "payload_preparation",
+            "http_post",
+        ],
+        "output_format": output_format,
+        "output": (
+            "Mini Evidence Agent read the single-file agent test bundle, "
+            "selected the listed task, prepared a schema-compatible payload, "
+            "and submitted it to the machine-readable receipt endpoint. "
+            "Completion is claimed only because the endpoint returned a receipt."
+        ),
+        "sources": [BUNDLE_URL],
+        "confidence": 0.95,
+        "notes": (
+            "Control baseline run from an environment with direct HTTP GET and POST capability. "
+            "This distinguishes arena/receipt failures from black-box chatbot runtime POST limitations."
+        ),
+    }
+
+    run["payload_prepared"] = True
+    run["events"].append(
+        {
+            "ts": now_iso(),
+            "event": "payload_prepared",
+            "task_id": task_id,
+        }
+    )
+
+    try:
+        post_response = http_post_json(submit_url, payload)
+        receipt = post_response["json"]
+
+        run["did_submit"] = True
+        run["receipt_returned"] = True
+        run["receipt_id"] = receipt.get("receipt_id")
+        run["proof_origin"] = receipt.get("proof_origin")
+        run["validation_status"] = (receipt.get("validation") or {}).get("status")
+        run["final_submission_status"] = receipt.get("submission_status", "unknown")
+
+        run["events"].append(
+            {
+                "ts": now_iso(),
+                "event": "payload_submitted",
+                "url": submit_url,
+                "status_code": post_response["status_code"],
+                "receipt": receipt,
+            }
+        )
+
+    except Exception as exc:
+        err = to_error("payload_submit", exc)
+        run["did_submit"] = True
+        run["receipt_returned"] = False
+        run["final_submission_status"] = "submission_attempted_no_receipt"
+        run["first_evidence_chain_break"] = err
+        run["events"].append(err)
+
+    valid_completion = (
+        run["receipt_returned"] is True
+        and bool(run["receipt_id"])
+        and run["proof_origin"] in ["target_system", "public_durable_record"]
+        and run["validation_status"] == "passed"
+        and run["final_submission_status"] == "submitted_with_receipt"
+    )
+
+    run["completion_judgement"] = "PASS" if valid_completion else "FAIL_OR_PARTIAL"
+    run["finished_at"] = now_iso()
+
+    write_outputs(run, payload)
+    print(json.dumps(run, indent=2, ensure_ascii=False))
+    return 0 if valid_completion else 2
 
 
 if __name__ == "__main__":
