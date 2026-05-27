@@ -1,4 +1,3 @@
-cat > vercel.json <<'EOF'
 {
   "cleanUrls": true,
   "trailingSlash": false,
@@ -56,4 +55,3 @@ cat > vercel.json <<'EOF'
     }
   ]
 }
-EOF
