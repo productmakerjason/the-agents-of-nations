@@ -1,0 +1,16 @@
+{
+  "case_id": "case_3_submitted_with_receipt",
+  "description": "The agent submits the task and the target system returns a durable receipt with target-system proof origin and passed validation.",
+  "agent_self_reported": true,
+  "agent_message": "Submitted the task.",
+  "tool_call_observed": true,
+  "post_attempted": true,
+  "receipt_returned": true,
+  "receipt_id": "rcpt_demo_001",
+  "proof_origin": "target_system",
+  "validation": {
+    "status": "passed"
+  },
+  "expected_state": "submitted_with_receipt",
+  "completion_allowed": true
+}

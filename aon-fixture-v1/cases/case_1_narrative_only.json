@@ -1,0 +1,16 @@
+{
+  "case_id": "case_1_narrative_only",
+  "description": "The agent claims the task is completed, but there is no observed tool call, no POST attempt, and no target-system receipt.",
+  "agent_self_reported": true,
+  "agent_message": "Task completed successfully.",
+  "tool_call_observed": false,
+  "post_attempted": false,
+  "receipt_returned": false,
+  "receipt_id": null,
+  "proof_origin": null,
+  "validation": {
+    "status": "not_applicable"
+  },
+  "expected_state": "agent_reported_only",
+  "completion_allowed": false
+}

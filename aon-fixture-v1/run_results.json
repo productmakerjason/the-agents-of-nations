@@ -1,0 +1,31 @@
+{
+  "fixture_name": "aon_completion_proof_boundary_v1",
+  "rule": "completed_requires_target_system_evidence",
+  "results": [
+    {
+      "case_id": "case_1_narrative_only",
+      "observed_state": "agent_reported_only",
+      "completion_allowed": false,
+      "expected_state": "agent_reported_only",
+      "expected_completion_allowed": false,
+      "passed": true
+    },
+    {
+      "case_id": "case_2_execution_no_receipt",
+      "observed_state": "execution_attempted_no_receipt",
+      "completion_allowed": false,
+      "expected_state": "execution_attempted_no_receipt",
+      "expected_completion_allowed": false,
+      "passed": true
+    },
+    {
+      "case_id": "case_3_submitted_with_receipt",
+      "observed_state": "submitted_with_receipt",
+      "completion_allowed": true,
+      "expected_state": "submitted_with_receipt",
+      "expected_completion_allowed": true,
+      "passed": true
+    }
+  ],
+  "all_passed": true
+}

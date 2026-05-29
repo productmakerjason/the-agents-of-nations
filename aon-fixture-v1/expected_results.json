@@ -1,0 +1,37 @@
+{
+  "fixture_name": "aon_completion_proof_boundary_v1",
+  "fixture_version": "v1",
+  "rule": "completed_requires_target_system_evidence",
+  "principle": "Completed is not a claim. Completed is a state supported by target-system evidence.",
+  "scope": {
+    "included": [
+      "case_1: narrative only",
+      "case_2: execution attempted without receipt",
+      "case_3: submitted with target-system receipt"
+    ],
+    "excluded_from_v1": [
+      "authority-continuity check",
+      "platform/dashboard",
+      "broad standard/spec",
+      "marketplace mechanics",
+      "proof level taxonomy"
+    ]
+  },
+  "cases": [
+    {
+      "case_id": "case_1_narrative_only",
+      "expected_state": "agent_reported_only",
+      "completion_allowed": false
+    },
+    {
+      "case_id": "case_2_execution_no_receipt",
+      "expected_state": "execution_attempted_no_receipt",
+      "completion_allowed": false
+    },
+    {
+      "case_id": "case_3_submitted_with_receipt",
+      "expected_state": "submitted_with_receipt",
+      "completion_allowed": true
+    }
+  ]
+}

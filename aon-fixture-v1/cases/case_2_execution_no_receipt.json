@@ -1,0 +1,16 @@
+{
+  "case_id": "case_2_execution_no_receipt",
+  "description": "The agent attempts or submits the task, but the target system does not return a durable receipt or confirmation.",
+  "agent_self_reported": true,
+  "agent_message": "Submitted the task.",
+  "tool_call_observed": true,
+  "post_attempted": true,
+  "receipt_returned": false,
+  "receipt_id": null,
+  "proof_origin": null,
+  "validation": {
+    "status": "missing_receipt"
+  },
+  "expected_state": "execution_attempted_no_receipt",
+  "completion_allowed": false
+}
