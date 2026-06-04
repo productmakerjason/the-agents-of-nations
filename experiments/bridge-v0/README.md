@@ -159,3 +159,31 @@ missing signature or receipt         -> ccpp.validation_result = unknown
 ```
 
 This mapping is intentionally minimal. It tests whether a git-ledger-style proof artifact can be inspected through CCPP v0, not whether this is a complete or official Resolution Note schema.
+## Demo output
+
+A saved terminal output is included here:
+
+```txt
+demo-output.txt
+```
+
+Run locally:
+
+```bash
+python3 bridge.py --all
+```
+
+The demo shows two different representative completion-proof artifacts being converted into the same CCPP v0 structure:
+
+```txt
+msaleme-like attested receipt -> CCPP v0
+Mycelium-like Resolution Note -> CCPP v0
+```
+
+The important point is not that CCPP v0 is a standard.
+
+The important point is that two different local completion-proof artifacts can be inspected through the same minimal profile.
+
+This supports the Day 6 validation question:
+
+> If another evaluator, workflow, or agent market had to consume your completion proof, what field would be missing from this profile?

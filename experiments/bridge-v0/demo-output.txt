@@ -1,0 +1,20 @@
+The Bridge v0 — CCPP conversion results
+
+[msaleme-like receipt] -> CCPP v0: passed
+[mycelium-like note] -> CCPP v0: passed
+
+Generated outputs:
+- outputs/msaleme-like.ccpp.json
+- outputs/mycelium-like.ccpp.json
+
+Side-by-side CCPP v0 fields:
+field                | msaleme-like                     | mycelium-like
+--------------------------------------------------------------------------------------------
+claim                | task completed                   | task completed
+task_id              | taskhash_9f3a_demo               | commit_demo_8b7c
+evidence_type        | receipt                          | git_artifact
+proof_source         | durable_record                   | durable_record
+target_reference     | rct_demo_001                     | exec_receipt_demo_789
+validation_result    | passed                           | passed
+timestamp            | 2026-06-04T00:00:00Z             | unknown
+issuer               | demo_security_harness            | mycelium_git_ledger
