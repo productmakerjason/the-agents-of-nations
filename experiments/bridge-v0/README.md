@@ -187,3 +187,22 @@ The important point is that two different local completion-proof artifacts can b
 This supports the Day 6 validation question:
 
 > If another evaluator, workflow, or agent market had to consume your completion proof, what field would be missing from this profile?
+## External review request
+
+A short external review note is available here:
+
+```txt
+EXTERNAL_REVIEW_REQUEST.md
+```
+
+This file is intended for Day 6 outreach.
+
+The review question is intentionally narrow:
+
+```txt
+If another evaluator, workflow, or agent market had to consume your completion proof, what field would be missing from CCPP v0?
+```
+
+The goal is not to validate a taxonomy.
+
+The goal is to test whether completion proof needs a portable compatibility layer.
