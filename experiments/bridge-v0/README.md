@@ -115,3 +115,25 @@ Fail:
 ```txt
 Layer 1 not passed
 ```
+## Day 2: msaleme-like mapping rule
+
+The first mapping target is the representative `msaleme-like-receipt.json` sample.
+
+The mapping is documented here:
+
+```txt
+docs/msaleme-like-mapping.md
+```
+
+Core mapping:
+
+```txt
+msaleme.task_hash          -> ccpp.task_id
+msaleme.receipt_id         -> ccpp.target_reference
+msaleme.actual_outcome     -> ccpp.validation_result
+msaleme.timestamp          -> ccpp.timestamp
+msaleme.attestation.evaluator -> ccpp.issuer
+msaleme.attestation exists -> ccpp.proof_source = durable_record
+```
+
+This mapping is intentionally minimal. It tests whether a receipt-style proof can be inspected through CCPP v0, not whether this is a complete or official receipt schema.
