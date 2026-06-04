@@ -137,3 +137,25 @@ msaleme.attestation exists -> ccpp.proof_source = durable_record
 ```
 
 This mapping is intentionally minimal. It tests whether a receipt-style proof can be inspected through CCPP v0, not whether this is a complete or official receipt schema.
+## Day 3: Mycelium-like mapping rule
+
+The second mapping target is the representative `mycelium-like-resolution-note.json` sample.
+
+The mapping is documented here:
+
+```txt
+docs/mycelium-like-mapping.md
+```
+
+Core mapping:
+
+```txt
+mycelium.commit_ref                  -> ccpp.task_id
+mycelium.execution_receipt           -> ccpp.target_reference
+mycelium.output_hash                 -> ccpp.target_reference fallback
+mycelium.signature exists            -> ccpp.proof_source = durable_record
+mycelium.signature + receipt exist   -> ccpp.validation_result = passed
+missing signature or receipt         -> ccpp.validation_result = unknown
+```
+
+This mapping is intentionally minimal. It tests whether a git-ledger-style proof artifact can be inspected through CCPP v0, not whether this is a complete or official Resolution Note schema.
