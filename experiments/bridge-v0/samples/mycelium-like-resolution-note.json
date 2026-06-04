@@ -1,0 +1,10 @@
+{
+  "commit_ref": "commit_demo_8b7c",
+  "output_hash": "outputhash_demo_456",
+  "filesystem_changes": [
+    "tasks/task-001/result.json",
+    "receipts/task-001.receipt.json"
+  ],
+  "execution_receipt": "exec_receipt_demo_789",
+  "signature": "sig_demo_ed25519"
+}

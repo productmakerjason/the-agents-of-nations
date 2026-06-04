@@ -1,0 +1,10 @@
+{
+  "receipt_id": "rct_demo_001",
+  "task_hash": "taskhash_9f3a_demo",
+  "actual_outcome": "success",
+  "timestamp": "2026-06-04T00:00:00Z",
+  "attestation": {
+    "merkle_root": "merkleroot_demo_abc123",
+    "evaluator": "demo_security_harness"
+  }
+}

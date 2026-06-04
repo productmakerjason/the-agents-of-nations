@@ -1,0 +1,10 @@
+{
+  "claim": "task completed",
+  "task_id": "commit_demo_8b7c",
+  "evidence_type": "git_artifact",
+  "proof_source": "durable_record",
+  "target_reference": "exec_receipt_demo_789",
+  "validation_result": "passed",
+  "timestamp": "unknown",
+  "issuer": "mycelium_git_ledger"
+}

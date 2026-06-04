@@ -1,0 +1,10 @@
+{
+  "claim": "task completed",
+  "task_id": "taskhash_9f3a_demo",
+  "evidence_type": "receipt",
+  "proof_source": "durable_record",
+  "target_reference": "rct_demo_001",
+  "validation_result": "passed",
+  "timestamp": "2026-06-04T00:00:00Z",
+  "issuer": "demo_security_harness"
+}

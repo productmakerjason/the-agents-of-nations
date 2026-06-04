@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Common Completion Proof Profile v0",
+  "description": "Minimal profile for mapping local agent completion proof into a shared structure.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "claim",
+    "task_id",
+    "evidence_type",
+    "proof_source",
+    "target_reference",
+    "validation_result",
+    "timestamp",
+    "issuer"
+  ],
+  "properties": {
+    "claim": {
+      "type": "string",
+      "description": "The completion claim being evaluated."
+    },
+    "task_id": {
+      "type": "string",
+      "description": "Task identifier, hash, commit reference, or equivalent task reference."
+    },
+    "evidence_type": {
+      "type": "string",
+      "enum": [
+        "receipt",
+        "git_artifact"
+      ],
+      "description": "The local evidence artifact type."
+    },
+    "proof_source": {
+      "type": "string",
+      "enum": [
+        "durable_record",
+        "target_system",
+        "evaluator",
+        "agent_self_reported"
+      ],
+      "description": "The source that supports the proof."
+    },
+    "target_reference": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Reference to the target system, git object, receipt id, or durable record."
+    },
+    "validation_result": {
+      "type": "string",
+      "enum": [
+        "passed",
+        "failed",
+        "pending",
+        "unknown"
+      ],
+      "description": "Whether the evidence supports the completion claim."
+    },
+    "timestamp": {
+      "type": "string",
+      "description": "Timestamp associated with the proof."
+    },
+    "issuer": {
+      "type": "string",
+      "description": "System, evaluator, or mechanism that issued the proof."
+    }
+  }
+}
