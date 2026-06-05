@@ -1,0 +1,9 @@
+{
+  "verification_id": "verify_task_001_reject_no_evidence",
+  "task_id": "task_001",
+  "verifier": "grok",
+  "validation_result": "rejected",
+  "reason": "The worker claimed completion, but no target evidence was provided. Worker claim alone is not completion proof.",
+  "receipt_can_be_issued": false,
+  "checked_at": "2026-06-05T00:06:00Z"
+}

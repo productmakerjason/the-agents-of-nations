@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AoN Task Receipt Loop Receipt",
+  "type": "object",
+  "required": [
+    "receipt_id",
+    "task_id",
+    "task_ref",
+    "requester",
+    "worker",
+    "claim",
+    "proof_source",
+    "target_reference",
+    "completion_condition",
+    "evidence_checked",
+    "acceptance_mode",
+    "acceptance_result",
+    "validation_result",
+    "issuer",
+    "issued_at"
+  ],
+  "properties": {
+    "receipt_id": { "type": "string" },
+    "task_id": { "type": "string" },
+    "task_ref": { "type": "string" },
+    "requester": { "type": "string" },
+    "worker": { "type": "string" },
+    "claim": { "type": "string" },
+    "proof_source": {
+      "type": "string",
+      "enum": ["target_system"]
+    },
+    "target_reference": { "type": "string" },
+    "completion_condition": { "type": "string" },
+    "evidence_checked": { "type": "boolean" },
+    "acceptance_mode": {
+      "type": "string",
+      "enum": ["auto", "requester_approval"]
+    },
+    "acceptance_result": {
+      "type": "string",
+      "enum": ["accepted", "rejected"]
+    },
+    "validation_result": {
+      "type": "string",
+      "enum": ["passed", "failed", "rejected"]
+    },
+    "issuer": { "type": "string" },
+    "issued_at": { "type": "string" }
+  }
+}

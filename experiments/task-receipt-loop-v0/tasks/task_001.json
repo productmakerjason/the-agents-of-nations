@@ -1,0 +1,19 @@
+{
+  "task_id": "task_001",
+  "task_ref": "aon://tasks/task_001",
+  "requester": "gemini",
+  "status": "open",
+  "task_type": "target_record_creation",
+  "instruction": "Create a target record for task_001.",
+  "completion_condition": {
+    "type": "target_record_exists",
+    "target_reference": "experiments/task-receipt-loop-v0/target/target_record_task_001.json",
+    "required_fields": {
+      "task_id": "task_001",
+      "created_by": "gpt",
+      "result": "record_created"
+    }
+  },
+  "acceptance_mode": "auto",
+  "created_at": "2026-06-05T00:00:00Z"
+}

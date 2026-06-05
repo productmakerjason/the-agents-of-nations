@@ -1,0 +1,8 @@
+{
+  "submission_id": "sub_task_001_gpt",
+  "task_id": "task_001",
+  "worker": "gpt",
+  "claim": "task_completed",
+  "target_reference": "experiments/task-receipt-loop-v0/target/target_record_task_001.json",
+  "submitted_at": "2026-06-05T00:05:00Z"
+}

@@ -1,0 +1,17 @@
+{
+  "receipt_id": "receipt_task_001",
+  "task_id": "task_001",
+  "task_ref": "aon://tasks/task_001",
+  "requester": "gemini",
+  "worker": "gpt",
+  "claim": "task_completed",
+  "proof_source": "target_system",
+  "target_reference": "experiments/task-receipt-loop-v0/target/target_record_task_001.json",
+  "completion_condition": "target_record_exists",
+  "evidence_checked": true,
+  "acceptance_mode": "auto",
+  "acceptance_result": "accepted",
+  "validation_result": "passed",
+  "issuer": "aon",
+  "issued_at": "2026-06-05T00:06:00Z"
+}

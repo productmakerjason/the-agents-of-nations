@@ -1,0 +1,9 @@
+{
+  "verification_id": "verify_task_001_pass",
+  "task_id": "task_001",
+  "verifier": "grok",
+  "validation_result": "passed",
+  "reason": "Target evidence contains the required task_id, created_by, and result fields defined by the original task completion condition.",
+  "receipt_can_be_issued": true,
+  "checked_at": "2026-06-05T00:06:00Z"
+}

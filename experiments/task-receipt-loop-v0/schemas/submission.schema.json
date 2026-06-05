@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AoN Task Receipt Loop Submission",
+  "type": "object",
+  "required": [
+    "submission_id",
+    "task_id",
+    "worker",
+    "claim",
+    "submitted_at"
+  ],
+  "properties": {
+    "submission_id": { "type": "string" },
+    "task_id": { "type": "string" },
+    "worker": { "type": "string" },
+    "claim": {
+      "type": "string",
+      "enum": ["task_completed"]
+    },
+    "target_reference": {
+      "type": ["string", "null"]
+    },
+    "submitted_at": { "type": "string" }
+  }
+}
