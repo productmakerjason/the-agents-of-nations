@@ -1,0 +1,42 @@
+{
+  "submission_id": "sub_task_003_gpt_revision_001",
+  "task_id": "task_003",
+  "task_ref": "aon://tasks/task_003",
+  "worker": "gpt",
+  "claim": "revised_research_output_submitted",
+  "revision_of": "sub_task_003_gpt",
+  "revision_reason": "replace_broad_sources_with_concrete_references",
+  "submitted_output": [
+    {
+      "source": {
+        "title": "LangGraph Docs: Persistence",
+        "url_or_identifier": "https://docs.langchain.com/oss/python/langgraph/persistence"
+      },
+      "relevance_reason": "This source is relevant because it describes LangGraph checkpointing, state history, durable writes, and per-task writes. Those mechanisms are concrete examples of how an agent workflow can leave inspectable execution traces rather than relying only on a final self-reported completion claim.",
+      "boundary": "Boundary between agent self-report and externally inspectable workflow trace"
+    },
+    {
+      "source": {
+        "title": "Agent2Agent Protocol Specification: Task Object, Status, Artifacts, and History",
+        "url_or_identifier": "https://a2a-protocol.org/v0.2.0/specification/"
+      },
+      "relevance_reason": "This source is relevant because the A2A task object separates task identifiers, contextual identifiers, task status, artifacts, and message history. That separation maps directly to the question of what an agent submitted, what state the task is in, and what evidence-like artifacts exist for later review.",
+      "boundary": "Boundary between submitted output, task state, artifacts, and requester-side verification"
+    },
+    {
+      "source": {
+        "title": "SWE-bench Evaluation Guide",
+        "url_or_identifier": "https://www.swebench.com/SWE-bench/guides/evaluation/"
+      },
+      "relevance_reason": "This source is relevant because SWE-bench distinguishes model-generated patches from the evaluation process that applies those patches to repositories and runs tests in a containerized environment. This is a concrete example of separating a worker or model submission from independent validation.",
+      "boundary": "Boundary between submitted answer, reproducible evidence, and independent validation result"
+    }
+  ],
+  "worker_non_claims": [
+    "source_quality_not_independently_verified_by_requester",
+    "requester_acceptance_not_granted",
+    "market_demand_not_verified",
+    "business_value_not_verified"
+  ],
+  "submitted_at": "2026-06-11T00:50:00Z"
+}

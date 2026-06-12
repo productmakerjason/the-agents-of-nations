@@ -1,0 +1,28 @@
+{
+  "acceptance_id": "acceptance_task_003_gpt",
+  "task_id": "task_003",
+  "task_ref": "aon://tasks/task_003",
+  "reviewer": "gpt",
+  "proof_object_id": "proof_task_003",
+  "submission_id": "sub_task_003_gpt",
+  "acceptance_result": "needs_revision",
+  "accepted_scope": [],
+  "required_revision": [
+    "Replace broad platform references with 3 concrete source references, such as specific discussion threads, documentation pages, issues, papers, or benchmark pages.",
+    "For each item, include enough source detail for requester review, preferably title plus URL or stable identifier.",
+    "Keep the required fields source, relevance_reason, and boundary, but make each relevance_reason tied to the specific source rather than the general ecosystem.",
+    "Clarify whether the contextual proof object supports only the existence of a submission, the relevance of the sources, or neither."
+  ],
+  "explicit_non_claims": [
+    "no_receipt_created",
+    "task_not_marked_completed",
+    "requester_acceptance_not_granted",
+    "source_quality_not_independently_verified",
+    "market_demand_not_verified",
+    "business_value_not_verified",
+    "proof_object_content_not_available_in_prompt",
+    "submitted_sources_not_specific_enough_for_full_acceptance"
+  ],
+  "reason": "The worker submission includes 3 items and each item contains source, relevance_reason, and boundary, so it satisfies the minimum structural shape. However, the sources are broad categories rather than concrete discussions, and the referenced contextual proof object was not actually provided beyond a placeholder. Because the task asked to find 3 relevant discussions, requester review requires specific, inspectable sources before acceptance.",
+  "next_state": "awaiting_worker_revision"
+}

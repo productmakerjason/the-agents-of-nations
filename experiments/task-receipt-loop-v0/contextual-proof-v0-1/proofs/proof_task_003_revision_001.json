@@ -1,0 +1,37 @@
+{
+  "proof_object_id": "proof_task_003_revision_001",
+  "task_id": "task_003",
+  "task_ref": "aon://tasks/task_003",
+  "submission_id": "sub_task_003_gpt_revision_001",
+  "revision_of_proof": "proof_task_003",
+  "claim": "revised_research_output_submitted",
+  "target_evidence": [
+    {
+      "type": "revised_submitted_output",
+      "reference": "experiments/task-receipt-loop-v0/contextual-proof-v0-1/submissions/task_003_submission_gpt_revision_001.json"
+    }
+  ],
+  "support_level": "improved_partially_supported",
+  "support_reason": "The revised worker submission replaces broad ecosystem-level references with concrete title plus URL source references. Each item still includes source, relevance_reason, and boundary. However, source content and source quality have not yet been independently reviewed by the requester, so the task should not be marked completed.",
+  "observed": [
+    "revised_submission_exists",
+    "revision_links_to_original_submission",
+    "item_count_matches_minimum_requirement",
+    "required_fields_present_per_item",
+    "concrete_source_references_present",
+    "worker_non_claims_present",
+    "no_receipt_created_by_worker",
+    "requester_acceptance_not_claimed_by_worker"
+  ],
+  "not_observed": [
+    "source_content_independently_verified",
+    "source_quality_independently_verified",
+    "market_demand_verified",
+    "business_value_verified",
+    "requester_acceptance_granted_for_revision"
+  ],
+  "requires_requester_acceptance": true,
+  "recommended_next_state": "requester_re_review_required",
+  "created_by": "aon_normalization_layer",
+  "created_at": "2026-06-11T01:00:00Z"
+}

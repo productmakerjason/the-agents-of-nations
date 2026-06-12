@@ -1,0 +1,30 @@
+{
+  "submission_id": "sub_task_003_gpt",
+  "task_id": "task_003",
+  "task_ref": "aon://tasks/task_003",
+  "worker": "gpt",
+  "claim": "research_output_submitted",
+  "submitted_output": [
+    {
+      "source": "LangChain / LangGraph discussions and documentation around durable execution, checkpoints, human-in-the-loop review, and stateful agent workflows",
+      "relevance_reason": "Relevant because LangGraph treats agent workflows as stateful graphs with persisted checkpoints, making it possible to inspect what step ran, what state changed, and where a workflow paused or resumed. This is directly related to proving that an agent did not merely claim completion, but passed through observable workflow states.",
+      "boundary": "Boundary between agent self-report and externally inspectable workflow trace"
+    },
+    {
+      "source": "AutoGPT / Agent Protocol discussions around standardized agent task execution APIs, run status, artifacts, and step-level outputs",
+      "relevance_reason": "Relevant because Agent Protocol-style task APIs separate submitted task output, execution status, artifacts, and logs. This helps define what a worker may submit versus what an external requester or orchestrator must verify later.",
+      "boundary": "Boundary between worker submission, task status, artifact output, and requester-side verification"
+    },
+    {
+      "source": "OpenAI Evals / SWE-bench style evaluation discussions around reproducible grading, test-based validation, and separating model answers from verifier results",
+      "relevance_reason": "Relevant because these evaluation frameworks distinguish between a model-generated answer and an independently computed evaluation result. That distinction maps closely to the Contextual Proof Object experiment, where the worker submission should not itself be treated as proof or receipt.",
+      "boundary": "Boundary between submitted answer, reproducible evidence, and independent validation result"
+    }
+  ],
+  "worker_non_claims": [
+    "quality_not_verified",
+    "requester_acceptance_not_granted",
+    "market_demand_not_verified"
+  ],
+  "submitted_at": "2026-06-11T00:10:00Z"
+}

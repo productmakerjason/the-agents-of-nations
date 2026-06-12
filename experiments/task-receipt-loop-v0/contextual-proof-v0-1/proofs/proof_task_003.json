@@ -1,0 +1,32 @@
+{
+  "proof_object_id": "proof_task_003",
+  "task_id": "task_003",
+  "task_ref": "aon://tasks/task_003",
+  "submission_id": "sub_task_003_gpt",
+  "claim": "research_output_submitted",
+  "target_evidence": [
+    {
+      "type": "submitted_output",
+      "reference": "experiments/task-receipt-loop-v0/contextual-proof-v0-1/submissions/task_003_submission_gpt.json"
+    }
+  ],
+  "support_level": "partially_supported",
+  "support_reason": "The worker submission contains 3 items and each item includes source, relevance_reason, and boundary fields. However, the sources are broad category-level references rather than independently verified concrete discussion URLs, so requester acceptance is still required.",
+  "observed": [
+    "submission_exists",
+    "item_count_matches_minimum_requirement",
+    "required_fields_present_per_item",
+    "worker_non_claims_present"
+  ],
+  "not_observed": [
+    "source_quality_independently_verified",
+    "concrete_discussion_urls_verified",
+    "market_demand_verified",
+    "business_value_verified",
+    "requester_acceptance_granted"
+  ],
+  "requires_requester_acceptance": true,
+  "recommended_next_state": "requester_review_required",
+  "created_by": "aon_normalization_layer",
+  "created_at": "2026-06-11T00:20:00Z"
+}
