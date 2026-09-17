@@ -1,114 +1,58 @@
-function jsonResponse(body, status = 200) {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: {
-      "Content-Type": "application/json; charset=utf-8",
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "POST, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type"
-    }
-  });
-}
+import { readFileSync } from 'node:fs';
 
-export function OPTIONS() {
-  return new Response(null, {
-    status: 204,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "POST, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type"
-    }
-  });
-}
+const taskIds = new Set(JSON.parse(readFileSync(new URL('../../public/tasks.json', import.meta.url), 'utf8')).tasks.map(task => task.task_id));
+const headers = {
+  'Content-Type': 'application/json; charset=utf-8',
+  'Cache-Control': 'no-store',
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type',
+  'Allow': 'POST, OPTIONS'
+};
+const json = (body, status = 200) => new Response(JSON.stringify({
+  stored: false, completion_status: 'not_verified', acceptance_status: 'not_reviewed', ...body
+}), { status, headers });
+const rejected = (error, status = 400, extra = {}) => json({ status: 'rejected', submission_status: 'invalid_payload', error, ...extra }, status);
 
-export function GET() {
-  return jsonResponse(
-    {
-      status: "error",
-      error: "method_not_allowed",
-      message: "Use POST to submit an agent payload.",
-      allowed_methods: ["POST"],
-      submission_status: "safe_stopped",
-      proof_origin: "target_system"
-    },
-    405
-  );
-}
+export function OPTIONS() { return new Response(null, { status: 204, headers }); }
+export function GET() { return json({ status: 'error', error: 'method_not_allowed', message: 'POST validates a payload only. No durable storage, acceptance or settlement is provided.' }, 405); }
 
 export async function POST(request) {
-  let payload = {};
-
-  try {
-    payload = await request.json();
-  } catch {
-    return jsonResponse(
-      {
-        status: "rejected",
-        error: "invalid_json",
-        message: "Request body must be valid JSON.",
-        submission_status: "invalid_payload",
-        proof_origin: "target_system"
-      },
-      400
-    );
-  }
-
-  const requiredFields = [
-    "agent_name",
-    "task_id",
-    "output_format",
-    "output",
-    "confidence"
-  ];
-
-  const missingFields = requiredFields.filter((field) => {
-    return (
-      payload[field] === undefined ||
-      payload[field] === null ||
-      payload[field] === ""
-    );
-  });
-
-  const taskId =
-    typeof payload.task_id === "string" && payload.task_id.length > 0
-      ? payload.task_id
-      : "unknown";
-
-  const now = new Date().toISOString();
-
-  if (missingFields.length > 0) {
-    return jsonResponse(
-      {
-        status: "rejected",
-        receipt_id: `rcpt_${Date.now()}_rejected`,
-        task_id: taskId,
-        received_at: now,
-        submission_status: "invalid_payload",
-        proof_origin: "target_system",
-        validation: {
-          status: "failed",
-          required_fields_present: false,
-          missing_fields: missingFields,
-          task_id_exists: taskId !== "unknown",
-          schema_version: "0.3-route-hardening"
+  // Bound bytes while reading instead of trusting Content-Length.
+  const reader = request.body?.getReader();
+  const chunks = [];
+  let size = 0;
+  if (reader) {
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        size += value.byteLength;
+        if (size > 65_536) {
+          await reader.cancel();
+          return rejected('payload_too_large', 413);
         }
-      },
-      400
-    );
+        chunks.push(value);
+      }
+    } catch { return rejected('unreadable_body'); }
   }
+  let payload;
+  try { payload = JSON.parse(Buffer.concat(chunks).toString('utf8')); }
+  catch { return rejected('invalid_json'); }
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) return rejected('object_required');
 
-  return jsonResponse({
-    status: "received",
-    receipt_id: `rcpt_${Date.now()}`,
-    task_id: taskId,
-    received_at: now,
-    submission_status: "submitted_with_receipt",
-    proof_origin: "target_system",
-    validation: {
-      status: "passed",
-      required_fields_present: true,
-      task_id_exists: true,
-      schema_version: "0.3-route-hardening"
-    }
+  const invalidFields = ['agent_name', 'task_id', 'output_format', 'output'].filter(key => typeof payload[key] !== 'string' || !payload[key].trim());
+  if (typeof payload.confidence !== 'number' || !Number.isFinite(payload.confidence) || payload.confidence < 0 || payload.confidence > 1) invalidFields.push('confidence');
+  const exists = taskIds.has(payload.task_id);
+  const validation = {
+    status: invalidFields.length || !exists ? 'failed' : 'passed',
+    required_fields_present: ['agent_name', 'task_id', 'output_format', 'output', 'confidence'].every(key => payload[key] !== undefined && payload[key] !== null),
+    invalid_fields: invalidFields, task_id_exists: exists,
+    schema_version: '0.4-contract-preview', scope: 'payload_structure_and_task_membership'
+  };
+  if (invalidFields.length || !exists) return rejected(exists ? 'invalid_fields' : 'unknown_task', 400, { validation });
+  return json({
+    status: 'validated', submission_status: 'validated_not_stored', task_id: payload.task_id, validation,
+    message: 'Payload structure and task membership checked. Output quality was not reviewed. Nothing was stored; this is not a submission receipt, contract acceptance, or completion proof.'
   });
 }

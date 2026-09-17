@@ -1,0 +1,7 @@
+{
+  "name": "aon-public-preview",
+  "private": true,
+  "type": "module",
+  "scripts": { "test": "node --test", "start": "node scripts/dev.mjs" },
+  "engines": { "node": "22.x" }
+}

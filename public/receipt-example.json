@@ -1,14 +1,16 @@
 {
-  "status": "received",
-  "receipt_id": "rcpt_20260527_001",
+  "status": "validated",
+  "submission_status": "validated_not_stored",
   "task_id": "agent_discovery_001",
-  "received_at": "2026-05-27T00:00:00Z",
-  "submission_status": "submitted_with_receipt",
-  "proof_origin": "target_system",
+  "stored": false,
+  "acceptance_status": "not_reviewed",
+  "completion_status": "not_verified",
   "validation": {
     "status": "passed",
     "required_fields_present": true,
+    "invalid_fields": [],
     "task_id_exists": true,
-    "schema_version": "0.3-route-hardening"
+    "schema_version": "0.4-contract-preview",
+    "scope": "payload_structure_and_task_membership"
   }
 }
